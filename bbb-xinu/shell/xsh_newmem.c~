@@ -1,0 +1,76 @@
+#include <newmem.h>
+
+int n;
+pid32 pid;
+sid32 consumed,produced;
+struct memblk* memptr;
+char *sp,*newsp;
+
+shellcmd xsh_newmem(int nargs, char *args[])
+{
+	int counter = 10;             //local varible to hold count
+	//int count = 0;
+	
+
+	//ass6
+//	memtest(1);
+	memptr = memlist.mnext;
+	while(memptr != NULL)
+        {
+            printf("Before everything:\n");
+	    printf("Address of block: %d\n",memptr);
+            printf("Length of block: %d\n\n",memptr->mlength);
+            memptr = memptr->mnext;
+            //count++;
+        }
+//
+	//resume( newcreate(newproducer, 1024, 20, "newproducer", 1, counter) );
+	//resume( newcreate(newconsumer, 1024, 20, "newconsumer", 1, counter) );
+
+	uint32 stksize;
+	stksize = 1024;
+	pid = newcreate(test, stksize, 20, "test",0);
+
+	
+	//Question3
+	struct	procent	*prptr;		/* pointer to proc. table entry */
+	prptr = &proctab[pid];
+	sp = prptr->prstkptr;
+	int spval;
+	spval = *sp;
+	printf("\nSp initial value=%d\n",spval);
+	resume(pid);
+
+//ass6
+//	memtest(2);
+	memptr = memlist.mnext;
+	while(memptr != NULL)
+        {
+            printf("After process creation:\n");
+	    printf("Address of block: %d\n",memptr);
+            printf("Length of block: %d\n\n",memptr->mlength);
+            memptr = memptr->mnext;
+        }
+//
+
+	int i = (int) getmem(sizeof(int));
+	
+	
+	//memtest(2);
+	memptr = memlist.mnext;
+	while(memptr != NULL)
+        {
+            printf("After getmem:\n");
+	    printf("Address of block : %d\n",memptr);
+            printf("Length of block: %d\n\n",memptr->mlength);
+            memptr = memptr->mnext;
+            //count++;
+        }
+//
+
+
+
+	
+	  return 0; 
+
+}

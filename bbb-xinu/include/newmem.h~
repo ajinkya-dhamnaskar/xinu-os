@@ -1,0 +1,6 @@
+#include <xinu.h> 
+/*function Prototype*/
+#define STACK_SIZE 1024
+#define DEFULT_STACK_CHAR 'A'
+	
+void test();

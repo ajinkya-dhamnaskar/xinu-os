@@ -1,0 +1,9 @@
+ #include <prodcons.h>
+ #include <stdio.h>
+
+ void consumer(int count)
+ {
+     
+	printf(n);
+
+ }

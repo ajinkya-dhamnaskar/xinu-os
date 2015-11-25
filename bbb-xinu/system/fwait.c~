@@ -1,0 +1,35 @@
+/* wait.c - wait */
+
+#include <future.h>
+/*------------------------------------------------------------------------
+ *  wait  -  Cause current process to wait on a semaphore
+ *------------------------------------------------------------------------
+ */
+syscall	fwait(
+	  future *f		/* future in which to wait  */
+	)
+{
+	intmask mask;			/* Saved interrupt mask		*/
+	struct	procent *prptr;		/* Ptr to process' table entry	*/
+
+	mask = disable();
+
+	if(f->state != FUTURE_EMPTY){
+		restore(mask);
+		return SYSERR;	
+	}
+
+	prptr = &proctab[currpid];
+	prptr->prstate = PR_WAIT;
+	
+	if(f->state == FUTURE_EXCLUSIVE){
+		f->pid = currpid;
+				
+	}else if(f->state == FUTURE_SHARED){
+		fenqueue(currpid, f->get_queue);	
+	}
+	resched();			/*   and reschedule	*/
+
+	restore(mask);
+	return OK;
+}

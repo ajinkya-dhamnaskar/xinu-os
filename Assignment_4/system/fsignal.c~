@@ -1,0 +1,39 @@
+/* fsignal.c - fsignal */
+
+#include <future.h> 	
+/*------------------------------------------------------------------------
+ *  fsignal  -  Signal a semaphore, releasing a process if one is waiting
+ *------------------------------------------------------------------------
+ */
+syscall	fsignal(
+	  future *f			/* future to be signaled	*/
+	)
+{
+	intmask mask;			/* Saved interrupt mask		*/
+	struct procent *prptr;
+
+	mask = disable();
+
+	if (f->state == FUTURE_EMPTY){
+		restore(mask);
+		return SYSERR;
+	}
+	if(f->state == FUTURE_EXCLUSIVE){
+		if(f->pid > 0){
+			//prptr = &proctab[f->tid];
+			//prptr->prstate = PR_READY;
+			//insert(f->tid, readylist, prptr->prprio);
+			ready(f->pid);		/* add process waiting in future to ready queue */
+			//resched();
+		}
+	}else if(f->state == FUTURE_SHARED){
+		if(fisempty(f->get_queue)){
+			ready(fdequeue(f->get_queue));
+		}
+	}else{
+			
+	}
+
+	restore(mask);
+	return OK;
+}
